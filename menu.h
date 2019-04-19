@@ -161,9 +161,7 @@ public:
 		while(SDL_PollEvent(&e)){}
 	}
 	void help(){
-		SDL_HideWindow(win);
-		Help mw;
-		SDL_ShowWindow(win);
+		Help mw(win);
 		SDL_Event e;
 		while(SDL_PollEvent(&e)){}
 	}
