@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <thread>
 #include <cstdlib>
 #include <list>
@@ -7,7 +8,12 @@
 #include <chrono>
 #include <list>
 #include <stack>
+#include <string>
+#include <fstream>
+#include <streambuf>
 #define byte uint8_t
+#define Point std::pair<int, int>
+int GLOBX, GLOBY;
 
 
 enum Type { TDel, TFood, TEater, TWall, TEnergy, TBact, TGood, TFighter, TUniversal, TZed, TClean, TNeuro, TMove, TPaste, TCopy};
@@ -47,6 +53,8 @@ void GameObject::DeleteSelf(MainWindow* mw) {
 GO_STD_DELETE(Wall)
 #include "poolsdef.h"
 
+#include "help.h"
+#include "menu.h"
 int main(int argc, char * argv[])
 {
     //ShowWindow(GetConsoleWindow(), SW_HIDE);
@@ -54,10 +62,7 @@ int main(int argc, char * argv[])
         rando[i] = rand();
     }
     //SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);//or HIGH_PRIORITY_CLASS
-    MainWindow m;
+    Menu m;
     //FreeConsole();
-    while (m.ex) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(2241));
-    }
     return 0;
 }

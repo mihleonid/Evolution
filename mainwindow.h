@@ -7,16 +7,48 @@ public:
 #pragma region Init
 	explicit MainWindow() {
 		ex = true;
-		if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		/*if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		{
 			std::cout << "SDL initialization failed. SDL Error: " << SDL_GetError();
-		}
+		}*/
 		Init();
 		for (int x = 300; x < 400; x++) {
 			for (int y = 300; y < 400; y++) {
 				Set(p.GFood(x, y));
 			}
 		}
+		for (int x = 299; x <= 400; x+=101) {
+			for (int y = 299; y <= 400; y++) {
+				Set(p.GWall(x, y));
+			}
+		}
+		for (int y = 299; y <= 400; y++) {
+			Set(p.GWall(y, 299));
+			Set(p.GWall(y, 400));
+		}
+
+		for (int y = 9; y <= 230; y++) {
+			Set(p.GWall(230, y));
+		}
+		for (int y = 9; y <= 230; y++) {
+			Set(p.GWall(9, y));
+		}
+		for (int y = 9; y <= 230; y++) {
+			Set(p.GWall(y, 9));
+			Set(p.GWall(y, 230));
+		}
+
+		for (int y = 9; y <= 110; y++) {
+			Set(p.GWall(110+240, y));
+		}
+		for (int y = 9; y <= 110; y++) {
+			Set(p.GWall(9+240, y));
+		}
+		for (int y = 9; y <= 110; y++) {
+			Set(p.GWall(y+240, 9));
+			Set(p.GWall(y+240, 110));
+		}
+
 		auto func = [](MainWindow* mw)
 		{
 			mw->gameLoop();
@@ -32,8 +64,7 @@ public:
 	}
 	~MainWindow() {
 		ex = false;
-		std::this_thread::sleep_for(std::chrono::seconds(2));
-		SDL_Quit();
+		//SDL_Quit();
 	}
 #pragma endregion
 #pragma region Prop
@@ -58,7 +89,8 @@ public:
 	void FieldMov(int x1, int y1, int x2, int y2);
 #pragma endregion
 	void renderLoop() {
-        win = SDL_CreateWindow("LEvolution", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WWIDTH, WHEIGHT, 0);//SDL_WINDOW_FULLSCREEN//SDL_WINDOW_OPENGL
+        	win = SDL_CreateWindow("LEvolution:Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WWIDTH, WHEIGHT, 0);//SDL_WINDOW_FULLSCREEN//SDL_WINDOW_OPENGL
+        	//win = SDL_CreateWindow("LEvolution", GLOBX, GLOBY, WWIDTH, WHEIGHT, 0);//SDL_WINDOW_FULLSCREEN//SDL_WINDOW_OPENGL
 		surface = SDL_GetWindowSurface(win);
 		SDL_Event e;
 		buffer[0] = nullptr;
@@ -67,6 +99,12 @@ public:
 				if (e.type == SDL_QUIT) {
 					ex = false;
 					goto evt;
+				}
+				if (e.type == SDL_WINDOWEVENT) {
+					if(e.window.event==SDL_WINDOWEVENT_CLOSE){
+						ex = false;
+						goto evt;
+					}
 				}
 				if (e.type == SDL_KEYDOWN) {
 					MACRO_KEYHANDEL_GO(TWall, W);
@@ -98,6 +136,10 @@ public:
 					}
 					if (e.key.keysym.scancode == SDL_SCANCODE_1) {
 						fielddraw = !fielddraw;
+						goto evt;
+					}
+					if (e.key.keysym.scancode == SDL_SCANCODE_Q) {
+						ex = false;
 						goto evt;
 					}
 					if (e.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
@@ -229,7 +271,7 @@ public:
 				}
 			}
 			while (ris) {
-				std::this_thread::sleep_for(std::chrono::milliseconds(2));
+				std::this_thread::sleep_for(std::chrono::milliseconds(3));
 			}
 		}
 	}
