@@ -27,6 +27,19 @@ public:
 			Set(p.GWall(y, 400));
 		}
 
+
+
+		for (int x = 298; x <= 401; x+=103) {
+			for (int y = 298; y <= 401; y++) {
+				Set(p.GWall(x, y));
+			}
+		}
+		for (int y = 298; y <= 401; y++) {
+			Set(p.GWall(y, 298));
+			Set(p.GWall(y, 401));
+		}
+
+
 		for (int y = 9; y <= 230; y++) {
 			Set(p.GWall(230, y));
 		}
@@ -37,6 +50,31 @@ public:
 			Set(p.GWall(y, 9));
 			Set(p.GWall(y, 230));
 		}
+
+
+		for (int y = 8; y <= 231; y++) {
+			Set(p.GWall(231, y));
+		}
+		for (int y = 8; y <= 231; y++) {
+			Set(p.GWall(8, y));
+		}
+		for (int y = 8; y <= 231; y++) {
+			Set(p.GWall(y, 8));
+			Set(p.GWall(y, 231));
+		}
+
+
+		for (int y = 8; y <= 111; y++) {
+			Set(p.GWall(111+240, y));
+		}
+		for (int y = 8; y <= 111; y++) {
+			Set(p.GWall(8+240, y));
+		}
+		for (int y = 8; y <= 111; y++) {
+			Set(p.GWall(y+240, 8));
+			Set(p.GWall(y+240, 111));
+		}
+
 
 		for (int y = 9; y <= 110; y++) {
 			Set(p.GWall(110+240, y));
@@ -119,6 +157,8 @@ public:
 					MACRO_KEYHANDEL_GO(TZed, Z);
 					MACRO_KEYHANDEL_GO(TClean, C);
 					MACRO_KEYHANDEL_GO(TNeuro, O);
+					MACRO_KEYHANDEL_GO(TXXX, X);
+					MACRO_KEYHANDEL_GO(TYYY, Y);
 					MACRO_KEYHANDEL_GO(TMove, M);
 					MACRO_KEYHANDEL_GO(TPaste, P);
 					MACRO_KEYHANDEL_GO(TCopy, K);
@@ -230,6 +270,8 @@ public:
 								MACRO_MOUSEMOVE_GO(Zed);
 								MACRO_MOUSEMOVE_GO(Clean);
 								MACRO_MOUSEMOVE_GO(Neuro);
+								MACRO_MOUSEMOVE_GO(XXX);
+								MACRO_MOUSEMOVE_GO(YYY);
 								y++;
 							}
 							x++;
@@ -301,6 +343,7 @@ public:
 						if(file.eof()){throw 1;}
 						g->spor=(bool)sp;
 						go=g;
+						goto gott;
 					}
 					if(type[0]=='G'){
 						Good* g=p.GGood(x, y);
@@ -309,6 +352,7 @@ public:
 						if(file.eof()){throw 1;}
 						g->spor=(bool)sp;
 						go=g;
+						goto gott;
 					}
 					if(type[0]=='N'){
 						Energy* g=p.GEnergy(x, y);
@@ -317,6 +361,7 @@ public:
 						if(file.eof()){throw 1;}
 						g->charge=(bool)sp;
 						go=g;
+						goto gott;
 					}
 					if(type[0]=='C'){
 						Clean* g=p.GClean(x, y);
@@ -325,6 +370,7 @@ public:
 						if(file.eof()){throw 1;}
 						g->del=(bool)sp;
 						go=g;
+						goto gott;
 					}
 					if(type[0]=='E'){
 						Eater* g=p.GEater(x, y);
@@ -337,6 +383,7 @@ public:
 						g->MaxSpeed=sp;
 						g->MaxTD=ss;
 						go=g;
+						goto gott;
 					}
 					if(type[0]=='F'){
 						Food* g=p.GFood(x, y);
@@ -349,15 +396,19 @@ public:
 						g->Delenie=sp;
 						g->DelenieMax=ss;
 						go=g;
+						goto gott;
 					}
 					if(type[0]=='Z'){
 						go=p.GZed(x, y);
+						goto gott;
 					}
 					if(type[0]=='U'){
 						go=p.GUniversal(x, y);
+						goto gott;
 					}
 					if(type[0]=='I'){
 						go=p.GFighter(x, y);
+						goto gott;
 					}
 					if(type[0]=='O'){
 						Neuro* g=p.GNeuro(x, y);
@@ -365,7 +416,26 @@ public:
 							file>>(g->net)[i];
 						}
 						go=g;
+						goto gott;
 					}
+					if(type[0]=='X'){
+						XXX* g=p.GXXX(x, y);
+						for(int i=0;i<NetSize*NetSize;i++){
+							file>>(g->net)[i];
+						}
+						go=g;
+						goto gott;
+					}
+					if(type[0]=='Y'){
+						YYY* g=p.GYYY(x, y);
+						for(int i=0;i<NetSize*NetSize;i++){
+							file>>(g->net)[i];
+						}
+						go=g;
+						goto gott;
+					}
+					throw 2;
+					gott:;
 					int a, b, c, d;
 					file>>a;
 					if(file.eof()){throw 1;}
@@ -451,6 +521,18 @@ public:
 						file<<"O ";
 						for(int i=0;i<NetSize;i++){
 							file<<(((Neuro*)g)->net)[i]<<" ";
+						}
+					}
+					if(g->Type==TXXX){
+						file<<"X ";
+						for(int i=0;i<NetSize*NetSize;i++){
+							file<<(((XXX*)g)->net)[i]<<" ";
+						}
+					}
+					if(g->Type==TYYY){
+						file<<"Y ";
+						for(int i=0;i<NetSize*NetSize;i++){
+							file<<(((YYY*)g)->net)[i]<<" ";
 						}
 					}
 					file<<(int)(g->strength)<<" ";

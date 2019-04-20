@@ -96,3 +96,21 @@ public:
 	void SetNew(int x, int y, MainWindow * mw);
 	void Mutable(int lastnet[]);
 };
+class XXX :public GameObject {
+public:
+	int net[NetSize*NetSize];
+	int a, b, c;
+	GO_STD_H(XXX)
+	void chk(int x, int y, MainWindow * mw);
+	void SetNew(int x, int y, MainWindow * mw);
+	void Mutable(int lastnet[]);
+};
+class YYY :public GameObject {
+public:
+	int net[NetSize*NetSize];
+	int a, b, c;
+	GO_STD_H(YYY)
+	void chk(int x, int y, MainWindow * mw);
+	void SetNew(int x, int y, MainWindow * mw);
+	void Mutable(int lastnet[]);
+};

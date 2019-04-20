@@ -16,11 +16,13 @@
 int GLOBX, GLOBY;
 
 
-enum Type { TDel, TFood, TEater, TWall, TEnergy, TBact, TGood, TFighter, TUniversal, TZed, TClean, TNeuro, TMove, TPaste, TCopy};
+enum Type { TDel, TFood, TEater, TWall, TEnergy, TBact, TGood, TFighter, TUniversal, TZed, TClean, TNeuro, TMove, TPaste, TCopy, TXXX, TYYY};
 #include "cfv.h"
 class MainWindow;
 class GameObject;
 class Food;
+class XXX;
+class YYY;
 class Pools;
 class Eater;
 class Wall;
@@ -51,6 +53,8 @@ void GameObject::DeleteSelf(MainWindow* mw) {
 #include "zed.h"
 #include "clean.h"
 #include "neuro.h"
+#include "xxx.h"
+#include "yyy.h"
 GO_STD_DELETE(Wall)
 #include "poolsdef.h"
 

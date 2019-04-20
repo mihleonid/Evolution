@@ -146,6 +146,8 @@ public:
 			//SDL_UpdateWindowSurface(win);
 			SDL_RenderPresent(ren);
 		}
+		SDL_Delay(200);
+		while(SDL_PollEvent(&e)){}
 		SDL_DestroyWindow(win);
 		TTF_CloseFont(fonta);
 		TTF_CloseFont(fontb);

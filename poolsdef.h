@@ -13,6 +13,8 @@ POOL_STD_GP(Universal)
 POOL_STD_GP(Zed)
 POOL_STD_GP(Clean)
 POOL_STD_GP(Neuro)
+POOL_STD_GP(XXX)
+POOL_STD_GP(YYY)
 Eater* Pools::GEater(int x, int y, int e, int m)
 {
 	Eater* f;
