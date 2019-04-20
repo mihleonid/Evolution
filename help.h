@@ -26,6 +26,7 @@ public:
 		TTF_Font* fonta = TTF_OpenFont("assets/ubuntumono.ttf", 18);
 		TTF_Font* fontb = TTF_OpenFont("assets/robbo.ttf", 30);
 		TTF_Font* fontc = TTF_OpenFont("assets/roboreg.ttf", 25);
+		TTF_Font* fontd = TTF_OpenFont("assets/robbo.ttf", 20);
 		if(!fonta) {
 			printf("TTF_OpenFont: %s\n", TTF_GetError());
 		}
@@ -105,9 +106,24 @@ public:
 			std::string str;
 			int ny=maxo+8;
 			while(getline(*file,str)){
+				if(str.length()>1){
+					if(str[0]=='*'){
+						break;
+					}
+				}
+				if(str.length()>5){
+					if((str[0]==' ')&&(str[1]==' ')&&(str[2]==' ')&&(str[3]==' ')&&(str[4]==' ')){
+						font=fontd;
+					}
+				}
 				Point ptmp=drawText(20, ny, str.c_str());
+				font=fonta;
 				ny+=ptmp.second;
 			}
+			ny-=WHEIGHT;
+			//std::cout<<maxo<<std::endl;
+			//std::cout<<ny<<std::endl;
+			//std::cout<<WHEIGHT<<std::endl;
 			(*file).clear();
 			(*file).seekg(0, std::ios::beg);
 
@@ -125,8 +141,8 @@ public:
 				if (e.type == SDL_KEYDOWN) {
 					if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
 						scroll+=2;
-						if(scroll>200){
-							scroll=200;
+						if(scroll>ny){
+							scroll=ny;
 						}
 						goto evt;
 					}
@@ -139,8 +155,8 @@ public:
 					}
 					if (e.key.keysym.scancode == SDL_SCANCODE_J) {
 						scroll+=5;
-						if(scroll>200){
-							scroll=200;
+						if(scroll>ny){
+							scroll=ny;
 						}
 						goto evt;
 					}
@@ -183,8 +199,8 @@ public:
 						scroll-=y-last;
 					}
 					last=y;
-					if(scroll>200){
-						scroll=200;
+					if(scroll>ny){
+						scroll=ny;
 					}
 					if(scroll<0){
 						scroll=0;
@@ -192,6 +208,7 @@ public:
 					h1=false;
 					h2=false;
 					h35=false;
+					y+=scroll;
 					if((x>h1l)&&(x<h1r)&&(y>top)&&(y<bot)){
 						h1=true;
 					}

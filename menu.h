@@ -50,8 +50,8 @@ public:
 			printf("TTF_OpenFont: %s\n", TTF_GetError());
 		}
 		SDL_Event e;
-		bool h1, h2;
-		h1=h2=false;
+		bool h1, h2, h3;
+		h1=h2=h3=false;
 		while (ex) {
 			bg=back;
 			fg=fonc;
@@ -73,7 +73,7 @@ public:
 			if(h1){
 				bg=hi;
 			}
-			Point h1s=drawTextCenter(h1p.first, h1p.second, "Играть");
+			Point h1s=drawTextCenter(h1p.first, h1p.second, "Симулировать");
 			bg=back;
 
 			Point h2p=Point(WWIDTH/2, h1s.second+6+p2.second+p.second+9);
@@ -81,6 +81,13 @@ public:
 				bg=hi;
 			}
 			Point h2s=drawTextCenter(h2p.first, h2p.second, "Помощь");
+			bg=back;
+
+			Point h3p=Point(WWIDTH/2, h2s.second+h2p.second+9);
+			if(h3){
+				bg=hi;
+			}
+			Point h3s=drawTextCenter(h3p.first, h3p.second, "Выход");
 			bg=back;
 
 			while (SDL_PollEvent(&e)) {
@@ -114,26 +121,36 @@ public:
 					int y = e.button.y;
 					h1=false;
 					h2=false;
+					h3=false;
 					if((x>(h1p.first-(h1s.first/2)))&&(x<(h1p.first+(h1s.first/2)))){
 						if((y>h1p.second)&&(y<h1p.second+h1s.second)){
 							h1=true;
 						}
 					}
 					if((x>(h2p.first-(h2s.first/2)))&&(x<(h2p.first+(h2s.first/2)))){
-						if((y>h2p.second)&&(y<h2p.second+h1s.second)){
+						if((y>h2p.second)&&(y<h2p.second+h2s.second)){
 							h2=true;
+						}
+					}
+					if((x>(h3p.first-(h3s.first/2)))&&(x<(h3p.first+(h3s.first/2)))){
+						if((y>h3p.second)&&(y<h3p.second+h3s.second)){
+							h3=true;
 						}
 					}
 					goto evt;
 				}
 				if (e.type == SDL_MOUSEBUTTONDOWN) {
 					if(h1){
-						h1=h2=false;
+						h1=h2=h3=false;
 						enter();
 					}
 					if(h2){
-						h1=h2=false;
+						h1=h2=h3=false;
 						help();
+					}
+					if(h3){
+						ex=false;
+						goto evt;
 					}
 					goto evt;
 				}
