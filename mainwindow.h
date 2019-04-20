@@ -154,6 +154,26 @@ public:
 						size -= 2;
 						goto evt;
 					}
+					if (e.key.keysym.scancode == SDL_SCANCODE_S) {
+						ris=true;
+						Svdg dg;
+						while(SDL_PollEvent(&e)){}
+						if(dg.ok){
+							save(dg.text+".levolution");
+						}
+						ris=false;
+						goto evt;
+					}
+					if (e.key.keysym.scancode == SDL_SCANCODE_R) {
+						ris=true;
+						Svdg dg;
+						while(SDL_PollEvent(&e)){}
+						if(dg.ok){
+							restore(dg.text+".levolution");
+						}
+						ris=false;
+						goto evt;
+					}
 				}
 				if (e.type == SDL_MOUSEMOTION) {
 					if (ris) {
@@ -246,6 +266,206 @@ public:
             //std::this_thread::sleep_for(std::chrono::milliseconds(41));
 		}
 		SDL_DestroyWindow(win);
+	}
+	void restore(std::string f){
+		try{
+			FILE *fp = fopen(f.c_str(), "r");
+			if (fp == NULL) {
+				if (errno == EACCES){
+					std::cerr<<"Permission denied"<<std::endl;
+				}else{
+					std::cerr<<"Something went wrong: "<<strerror(errno)<<std::endl;
+				}
+				throw 1;
+			}
+			fclose(fp);
+			std::ifstream file(f.c_str());
+			std::string type;
+			GameObject* go;
+			for(int x=0;x<WIDTH;x++){
+				for(int y=0;y<HEIGHT;y++){
+					file>>type;
+					if(file.eof()){throw 1;}
+					if(type[0]=='D'){
+						Delete(x, y);
+						continue;
+					}
+					if(type[0]=='W'){
+						Set(p.GWall(x, y));
+						continue;
+					}
+					if(type[0]=='A'){
+						Bact* g=p.GBact(x, y);
+						int sp;
+						file>>sp;
+						if(file.eof()){throw 1;}
+						g->spor=(bool)sp;
+						go=g;
+					}
+					if(type[0]=='G'){
+						Good* g=p.GGood(x, y);
+						int sp;
+						file>>sp;
+						if(file.eof()){throw 1;}
+						g->spor=(bool)sp;
+						go=g;
+					}
+					if(type[0]=='N'){
+						Energy* g=p.GEnergy(x, y);
+						int sp;
+						file>>sp;
+						if(file.eof()){throw 1;}
+						g->charge=(bool)sp;
+						go=g;
+					}
+					if(type[0]=='C'){
+						Clean* g=p.GClean(x, y);
+						int sp;
+						file>>sp;
+						if(file.eof()){throw 1;}
+						g->del=(bool)sp;
+						go=g;
+					}
+					if(type[0]=='E'){
+						Eater* g=p.GEater(x, y);
+						int sp;
+						int ss;
+						file>>sp;
+						if(file.eof()){throw 1;}
+						file>>ss;
+						if(file.eof()){throw 1;}
+						g->MaxSpeed=sp;
+						g->MaxTD=ss;
+						go=g;
+					}
+					if(type[0]=='F'){
+						Food* g=p.GFood(x, y);
+						int sp;
+						int ss;
+						file>>sp;
+						if(file.eof()){throw 1;}
+						file>>ss;
+						if(file.eof()){throw 1;}
+						g->Delenie=sp;
+						g->DelenieMax=ss;
+						go=g;
+					}
+					if(type[0]=='Z'){
+						go=p.GZed(x, y);
+					}
+					if(type[0]=='U'){
+						go=p.GUniversal(x, y);
+					}
+					if(type[0]=='I'){
+						go=p.GFighter(x, y);
+					}
+					if(type[0]=='O'){
+						Neuro* g=p.GNeuro(x, y);
+						for(int i=0;i<NetSize;i++){
+							file>>(g->net)[i];
+						}
+						go=g;
+					}
+					int a, b, c, d;
+					file>>a;
+					if(file.eof()){throw 1;}
+					file>>b;
+					if(file.eof()){throw 1;}
+					file>>c;
+					if(file.eof()){throw 1;}
+					file>>d;
+					if(file.eof()){throw 1;}
+					go->strength=(byte) a;
+					go->speed=(byte) b;
+					go->energy=c;
+					go->tospeed=(byte)d;
+					Set(go);
+				}
+			}
+		}catch(std::exception& e){
+			std::cerr<<"Save is not valid"<<std::endl;
+		}catch(int e){
+			std::cerr<<"Save is not valid"<<std::endl;
+		}
+	}
+	void save(std::string f){
+		try{
+			FILE *fp = fopen(f.c_str(), "w");
+			if (fp == NULL) {
+				if (errno == EACCES){
+					std::cerr<<"Permission denied"<<std::endl;
+				}else{
+					std::cerr<<"Something went wrong: "<<strerror(errno)<<std::endl;
+				}
+				throw 1;
+			}
+			fclose(fp);
+			std::ofstream file(f.c_str());
+			for(int x=0;x<WIDTH;x++){
+				for(int y=0;y<HEIGHT;y++){
+					GameObject* g=Get(x, y);
+					if(g==nullptr){
+						file<<"D ";
+						continue;
+					}
+					if(g->Type==TWall){
+						file<<"W ";
+						continue;
+					}
+					if(g->Type==TZed){
+						file<<"Z ";
+					}
+					if(g->Type==TFighter){
+						file<<"I ";
+					}
+					if(g->Type==TUniversal){
+						file<<"U ";
+					}
+					if(g->Type==TBact){
+						file<<"A ";
+						file<<(int)(((Bact*)g)->spor)<<" ";
+					}
+					if(g->Type==TGood){
+						file<<"G ";
+						file<<(int)(((Good*)g)->spor)<<" ";
+					}
+					if(g->Type==TEnergy){
+						file<<"N ";
+						file<<(int)(((Energy*)g)->charge)<<" ";
+					}
+					if(g->Type==TClean){
+						file<<"C ";
+						file<<(int)(((Clean*)g)->del)<<" ";
+					}
+					if(g->Type==TEater){
+						file<<"E ";
+						file<<((Eater*)g)->MaxSpeed<<" ";
+						file<<((Eater*)g)->MaxTD<<" ";
+					}
+					if(g->Type==TFood){
+						file<<"F ";
+						file<<((Food*)g)->Delenie<<" ";
+						file<<((Food*)g)->DelenieMax<<" ";
+					}
+					if(g->Type==TNeuro){
+						file<<"O ";
+						for(int i=0;i<NetSize;i++){
+							file<<(((Neuro*)g)->net)[i]<<" ";
+						}
+					}
+					file<<(int)(g->strength)<<" ";
+					file<<(int)(g->speed)<<" ";
+					file<<(int)(g->energy)<<" ";
+					file<<(int)(g->tospeed)<<" ";
+				}
+			}
+			file<<"EOF";
+			file<<std::endl;
+		}catch(std::exception& e){
+			std::cerr<<"Cannot write file"<<std::endl;
+		}catch(int e){
+			std::cerr<<"Cannot write file"<<std::endl;
+		}
 	}
 	void gameLoop() {
 		while (ex) {

@@ -33,6 +33,7 @@ class Zed;
 class Clean;
 class Neuro;
 #include "pools.h"
+#include "svdg.h"
 
 #include "go.h"
 #include "mainwindow.h"
