@@ -46,6 +46,8 @@ public:
 		h1=false;
 		h35=false;
 		SDL_HideWindow(www);
+		int last=-1000;
+		bool dddd=false;
 		while (ex) {
 			bg=back;
 			fg=fonc;
@@ -135,6 +137,32 @@ public:
 						}
 						goto evt;
 					}
+					if (e.key.keysym.scancode == SDL_SCANCODE_J) {
+						scroll+=5;
+						if(scroll>200){
+							scroll=200;
+						}
+						goto evt;
+					}
+					if (e.key.keysym.scancode == SDL_SCANCODE_K) {
+						scroll-=5;
+						if(scroll<0){
+							scroll=0;
+						}
+						goto evt;
+					}
+					if (e.key.keysym.scancode == SDL_SCANCODE_0) {
+						scroll=0;
+						goto evt;
+					}
+					if (e.key.keysym.scancode == SDL_SCANCODE_1) {
+						file=&filehelp;
+						goto evt;
+					}
+					if (e.key.keysym.scancode == SDL_SCANCODE_2) {
+						file=&filehot;
+						goto evt;
+					}
 					if (e.key.keysym.scancode == SDL_SCANCODE_Q) {
 						ex=false;
 						goto evt;
@@ -148,6 +176,19 @@ public:
 				if (e.type == SDL_MOUSEMOTION) {
 					int x = e.button.x;
 					int y = e.button.y;
+					if(last==-1000){
+						last=y;
+					}
+					if(dddd){
+						scroll-=y-last;
+					}
+					last=y;
+					if(scroll>200){
+						scroll=200;
+					}
+					if(scroll<0){
+						scroll=0;
+					}
 					h1=false;
 					h2=false;
 					h35=false;
@@ -165,17 +206,21 @@ public:
 				if (e.type == SDL_MOUSEBUTTONDOWN) {
 					if(h1){
 						file=&filehelp;
+						goto evt;
 					}
 					if(h2){
 						file=&filehot;
+						goto evt;
 					}
 					if(h35){
 						ex=false;
 						goto evt;
 					}
+					dddd=true;
 					goto evt;
 				}
 				if (e.type == SDL_MOUSEBUTTONUP) {
+					dddd=false;
 					goto evt;
 				}
 			evt:;
